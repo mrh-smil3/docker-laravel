@@ -5,11 +5,12 @@ services:
     build:
       context: .
       dockerfile: ./docker/php/Dockerfile
-    image: muhmdarif/laravel-project-app:latest
+#    image: muhmdarif/laravel-project-app:latest
     container_name: laravel_app
     working_dir: /var/www/html
     volumes:
       - ./app:/var/www/html
+      - ./.env:/var/www/html/.env
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
@@ -20,6 +21,8 @@ services:
       composer install &&
       php artisan key:generate &&
       php artisan storage:link &&
+      chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache &&
+      chown -R www-data:www-data /var/www/html &&
       php artisan migrate --force &&
       php-fpm
       "
